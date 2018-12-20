@@ -18,12 +18,24 @@ window.addEventListener('load',function(){
     };
 
     var AssetStone = this.document.querySelector('.vaild-AssetStone');
+    var TenTicket = this.document.querySelector('.vaild-TenTicket');
+    var SingleTicket = this.document.querySelector('.vaild-SingleTicket');
+    
     AssetStone.onkeyup = function(e)
     {
-        var text = this.value;
-        var msg_node = MsgNode();
-        IsValidCheck(text,this.classList,msg_node)
+        //this.classList.add(FORM_SUCCESS);
+        IsValidCheck(this.value,this.classList)
     };
+
+    TenTicket.onkeyup = function(e)
+    {
+        IsValidCheck(this.value,this.classList)
+    }
+
+    SingleTicket.onkeyup = function(e)
+    {
+        IsValidCheck(this.value,this.classList)
+    }
 
     //[].forEach.call(this.document.getElementsByClassName('vaild-AssetStone'),function(input)
     //{
@@ -36,19 +48,46 @@ window.addEventListener('load',function(){
     //   }) ;
     //});
 
-    function IsValidCheck(inputtext,assetDOMClass,msgDOMClass){
-
+    function IsValidCheck(inputtext,assetdom){
+        var msgdom = MsgNode();
         if(inputtext.length === 0)
         {
-            alert("文字がないよ");
+            assetdom.remove(FORM_ERROR);
+            assetdom.remove(FORM_SUCCESS);
+
+            if(IsformError())
+            {
+                return;
+            }
+
+            msgdom.remove(TAG_ERROR);
+            msgdom.remove(TAG_SUCCESS);
+            document.querySelector('.Message-block').innerHTML = "　";
+            
         }
         else if(!IsNumberText(inputtext))
-        {
-            alert("数字じゃないよ");
+        {            
+            assetdom.remove(FORM_SUCCESS);
+            assetdom.add(FORM_ERROR);
+            
+            msgdom.remove(TAG_SUCCESS);
+            msgdom.add(TAG_ERROR);
+            document.querySelector('.Message-block').innerHTML = MSG_INPUT_TYPE;
+            
         }
         else
         {
-            alert("数字だよ");
+            assetdom.remove(FORM_ERROR);
+            assetdom.add(FORM_SUCCESS);
+            
+            if(IsformError())
+            {
+                return;
+            }
+
+            msgdom.remove(TAG_ERROR);
+            msgdom.add(TAG_SUCCESS);
+            document.querySelector('.Message-block').innerHTML = "　";
         }
     }
 
@@ -67,6 +106,61 @@ window.addEventListener('load',function(){
         var tmp = text;
         var flg =tmp.match(/^[０-９0-9]+$/);
         return flg;
+    }
+
+    function IsformSuccess()
+    {
+        return IsAssetFormSuccess() && IsTenCkFormSuccess() && IsSingleCkFormSuccess();
+    }
+
+    function IsAssetFormSuccess()
+    {
+        return AssetStone.classList.contains(FORM_SUCCESS);
+    }
+
+    function IsTenCkFormSuccess()
+    {
+        return TenTicket.classList.contains(FORM_SUCCESS);
+    }
+
+    function IsSingleCkFormSuccess()
+    {
+        return SingleTicket.classList.contains(FORM_SUCCESS);
+    }
+
+    function IsformError()
+    {
+        if(IsAssetFormError())
+        {
+            return true;
+        }
+
+        if(IsTenCkFormError())
+        {
+            return true;
+        }
+
+        if(IsSingleCkFormError())
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    function IsAssetFormError()
+    {
+        return AssetStone.classList.contains(FORM_ERROR);
+    }
+
+    function IsTenCkFormError()
+    {
+        return TenTicket.classList.contains(FORM_ERROR);
+    }
+
+    function IsSingleCkFormError()
+    {
+        return SingleTicket.classList.contains(FORM_ERROR);
     }
 
     },false
