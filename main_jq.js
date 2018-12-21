@@ -1,4 +1,3 @@
- /// <reference path="typings/globals/jquery/index.d.ts" />
  ///ボタンをクリックしたら換算処理をする
  $(function (){
 

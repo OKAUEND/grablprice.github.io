@@ -12,14 +12,26 @@ window.addEventListener('load',function(){
     const PRICE_MULTIPLE = 10;
     const PRICE_TEN = 3000;
 
-    this.document.getElementById("btn").onclick = function()
-    {
-        
-    };
-
     var AssetStone = this.document.querySelector('.vaild-AssetStone');
     var TenTicket = this.document.querySelector('.vaild-TenTicket');
     var SingleTicket = this.document.querySelector('.vaild-SingleTicket');
+
+    this.document.getElementById("btn").onclick = function()
+    {
+        if(!IsformSuccess())
+        {
+            return;
+        }
+
+        var AssetStoneValue = Number(toHalfString(AssetStone.value));
+        var TenTicketValue = Number(toHalfString(TenTicket.value));
+        var SingleTicketValue = Number(toHalfString(SingleTicket.value));
+
+        var Price = (AssetStoneValue / PRICE ) + (TenTicketValue * PRICE_MULTIPLE) + SingleTicketValue;
+
+        document.querySelector('.AssetTimes').textContent = String(Math.floor(Price));
+        document.querySelector('.Price').textContent = String(Math.floor(Price * PRICE)); 
+    };
     
     AssetStone.onkeyup = function(e)
     {
@@ -49,7 +61,7 @@ window.addEventListener('load',function(){
     //});
 
     function IsValidCheck(inputtext,assetdom){
-        var msgdom = MsgNode();
+        var msgdom = getMsgNode();
         if(inputtext.length === 0)
         {
             assetdom.remove(FORM_ERROR);
@@ -62,7 +74,7 @@ window.addEventListener('load',function(){
 
             msgdom.remove(TAG_ERROR);
             msgdom.remove(TAG_SUCCESS);
-            document.querySelector('.Message-block').innerHTML = "　";
+            document.querySelector('.Message-block').textContent = "　";
             
         }
         else if(!IsNumberText(inputtext))
@@ -72,7 +84,7 @@ window.addEventListener('load',function(){
             
             msgdom.remove(TAG_SUCCESS);
             msgdom.add(TAG_ERROR);
-            document.querySelector('.Message-block').innerHTML = MSG_INPUT_TYPE;
+            document.querySelector('.Message-block').textContent = MSG_INPUT_TYPE;
             
         }
         else
@@ -87,11 +99,11 @@ window.addEventListener('load',function(){
 
             msgdom.remove(TAG_ERROR);
             msgdom.add(TAG_SUCCESS);
-            document.querySelector('.Message-block').innerHTML = "　";
+            document.querySelector('.Message-block').textContent = "　";
         }
     }
 
-    function MsgNode()
+    function getMsgNode()
     {
         var node;
         [].forEach.call(this.document.getElementsByClassName('Message-block'),function(input)
@@ -104,43 +116,27 @@ window.addEventListener('load',function(){
     function IsNumberText(text)
     {
         var tmp = text;
-        var flg =tmp.match(/^[０-９0-9]+$/);
-        return flg;
+        return tmp.match(/^[０-９0-9]+$/);
     }
 
     function IsformSuccess()
     {
-        return IsAssetFormSuccess() && IsTenCkFormSuccess() && IsSingleCkFormSuccess();
-    }
-
-    function IsAssetFormSuccess()
-    {
-        return AssetStone.classList.contains(FORM_SUCCESS);
-    }
-
-    function IsTenCkFormSuccess()
-    {
-        return TenTicket.classList.contains(FORM_SUCCESS);
-    }
-
-    function IsSingleCkFormSuccess()
-    {
-        return SingleTicket.classList.contains(FORM_SUCCESS);
+        return (AssetStone.classList.contains(FORM_SUCCESS) && TenTicket.classList.contains(FORM_SUCCESS) && SingleTicket.classList.contains(FORM_SUCCESS));
     }
 
     function IsformError()
     {
-        if(IsAssetFormError())
+        if(AssetStone.classList.contains(FORM_ERROR))
         {
             return true;
         }
 
-        if(IsTenCkFormError())
+        if(TenTicket.classList.contains(FORM_ERROR))
         {
             return true;
         }
 
-        if(IsSingleCkFormError())
+        if(SingleTicket.classList.contains(FORM_ERROR))
         {
             return true;
         }
@@ -148,19 +144,10 @@ window.addEventListener('load',function(){
         return false;
     }
 
-    function IsAssetFormError()
+    function toHalfString(text)
     {
-        return AssetStone.classList.contains(FORM_ERROR);
-    }
-
-    function IsTenCkFormError()
-    {
-        return TenTicket.classList.contains(FORM_ERROR);
-    }
-
-    function IsSingleCkFormError()
-    {
-        return SingleTicket.classList.contains(FORM_ERROR);
+        var tmp = text;
+        return tmp.replace(/[０-９]/g,function(s){ return String.fromCharCode(s.charCodeAt(0)-0xFEE0) });
     }
 
     },false
